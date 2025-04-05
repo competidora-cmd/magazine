@@ -291,15 +291,16 @@
         /* Article Constructor Improvements */
         .image-gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-bottom: 15px;
+            margin: 15px 0;
         }
 
         .image-preview {
             position: relative;
             padding-bottom: 100%;
             background: var(--light-gray);
+            border-radius: 8px;
             overflow: hidden;
         }
 
@@ -314,8 +315,8 @@
 
         .image-remove {
             position: absolute;
-            top: 5px;
-            right: 5px;
+            top: 8px;
+            right: 8px;
             background: rgba(0, 0, 0, 0.5);
             color: white;
             width: 24px;
@@ -326,6 +327,7 @@
             justify-content: center;
             cursor: pointer;
             font-size: 18px;
+            border: none;
         }
 
         .toolbar {
@@ -389,6 +391,43 @@
         .preview-mode .article-preview {
             display: block;
         }
+
+        .form-submit {
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .form-cancel {
+            background: var(--light-gray);
+            color: var(--dark-gray);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .image-counter {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -397,19 +436,19 @@
             <h1>ultramodern</h1>
         </div>
         <div class="categories-container">
-            <nav class="nav-menu">
+        <nav class="nav-menu">
                 <a href="#" class="active" data-category="all">ВСЕ</a>
                 <a href="#" data-category="fashion">МОДА</a>
                 <a href="#" data-category="beauty">КРАСОТА</a>
                 <a href="#" data-category="lifestyle">ЛАЙФСТАЙЛ</a>
                 <a href="#" data-category="culture">КУЛЬТУРА</a>
-            </nav>
+        </nav>
         </div>
     </div>
 
     <div class="main-content">
         <div class="article-grid" id="articleGrid"></div>
-    </div>
+                </div>
 
     <button class="article-constructor" id="createArticleBtn">+</button>
 
@@ -423,6 +462,7 @@
             <div class="form-group">
                 <label class="form-label">Категория</label>
                 <select class="form-input" name="category" required>
+                    <option value="">Выберите категорию</option>
                     <option value="fashion">Мода</option>
                     <option value="beauty">Красота</option>
                     <option value="lifestyle">Лайфстайл</option>
@@ -430,12 +470,13 @@
                 </select>
                 </div>
             <div class="form-group">
+                <label class="form-label">Изображения (до 9 фотографий)</label>
+                <input type="file" class="form-input" name="images" accept="image/*" multiple>
+                <div class="image-gallery" id="imageGallery"></div>
+            </div>
+            <div class="form-group">
                 <label class="form-label">Содержание</label>
                 <textarea class="form-input form-textarea" name="content" required></textarea>
-                </div>
-            <div class="form-group">
-                <label class="form-label">Изображения</label>
-                <input type="file" class="form-input" name="images" accept="image/*" multiple>
                 </div>
             <div class="form-group">
                 <label class="form-label">Теги (через запятую)</label>
@@ -456,10 +497,10 @@
     </div>
 
     <script>
-        // Initialize Telegram WebApp
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-
+            // Initialize Telegram WebApp
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const userId = parseInt(urlParams.get('user_id'));
@@ -529,102 +570,107 @@
             });
         });
 
-        // Article Constructor
-        const constructor = document.getElementById('createArticleBtn');
+        // Article creation handling
+        const constructorBtn = document.getElementById('createArticleBtn');
         const modal = document.getElementById('constructorModal');
-        const tagInput = document.getElementById('tag-input');
-        const tagContainer = document.getElementById('tag-container');
-        const publishBtn = document.querySelector('.form-submit');
+        const articleForm = document.getElementById('articleForm');
+        const cancelBtn = document.getElementById('cancelArticle');
+        const imageGallery = document.getElementById('imageGallery');
+        let selectedImages = [];
 
-        constructor.addEventListener('click', () => {
+        // Show modal when clicking create button
+        constructorBtn.addEventListener('click', () => {
             modal.classList.add('active');
         });
 
-        // Close modal when clicking outside
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
+        // Hide modal when clicking cancel
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+            articleForm.reset();
+            imageGallery.innerHTML = '';
+            selectedImages = [];
         });
 
-        // Tag handling
-        let tags = new Set();
+        // Handle image selection
+        articleForm.images.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            
+            if (selectedImages.length + files.length > 9) {
+                tg.showAlert('Максимум 9 фотографий');
+                return;
+            }
 
-        tagInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && tagInput.value.trim()) {
-                e.preventDefault();
-                const tag = tagInput.value.trim();
-                if (!tags.has(tag)) {
-                    tags.add(tag);
-                    const tagElement = document.createElement('div');
-                    tagElement.className = 'tag';
-                    tagElement.innerHTML = `
-                        ${tag}
-                        <span class="tag-remove">×</span>
+            files.forEach(file => {
+                if (selectedImages.length >= 9) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-preview';
+                    imageContainer.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview">
+                        <div class="image-counter">${selectedImages.length + 1}/9</div>
+                        <button type="button" class="image-remove">×</button>
                     `;
-                    tagContainer.insertBefore(tagElement, tagInput);
-                    tagInput.value = '';
 
-                    // Remove tag
-                    tagElement.querySelector('.tag-remove').addEventListener('click', () => {
-                        tags.delete(tag);
-                        tagElement.remove();
+                    imageContainer.querySelector('.image-remove').addEventListener('click', () => {
+                        const index = selectedImages.indexOf(file);
+                        if (index > -1) {
+                            selectedImages.splice(index, 1);
+                            imageContainer.remove();
+                            // Update counters
+                            document.querySelectorAll('.image-counter').forEach((counter, i) => {
+                                counter.textContent = `${i + 1}/9`;
+                            });
+                        }
                     });
-                }
-            }
+
+                    imageGallery.appendChild(imageContainer);
+                    selectedImages.push(file);
+                };
+                reader.readAsDataURL(file);
+            });
         });
 
-        // Image handling
-        const imageInput = document.getElementById('images');
-        const imageGallery = document.getElementById('preview-images');
-        const images = new Set();
-
-        imageInput.addEventListener('change', (e) => {
-            const files = e.target.files;
-            for (let file of files) {
-                if (!images.has(file)) {
-                    images.add(file);
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const div = document.createElement('div');
-                        div.className = 'image-preview';
-                        div.innerHTML = `
-                            <img src="${e.target.result}" alt="Article image">
-                            <div class="image-remove">×</div>
-                        `;
-                        imageGallery.appendChild(div);
-
-                        div.querySelector('.image-remove').addEventListener('click', () => {
-                            images.delete(file);
-                            div.remove();
-                            updatePreview();
-                        });
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
-            updatePreview();
-        });
-
-        // Rich text editor
-        const toolbar = document.querySelector('.toolbar');
-        const editor = document.getElementById('article-content');
-
-        toolbar.addEventListener('click', (e) => {
-            const button = e.target.closest('button');
-            if (!button) return;
-
-            const command = button.dataset.command;
-            if (command) {
+        // Handle form submission
+        articleForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-                if (['h2', 'h3', 'quote'].includes(command)) {
-                    const tag = command === 'quote' ? 'blockquote' : command;
-                    document.execCommand('formatBlock', false, `<${tag}>`);
+
+            const formData = new FormData(articleForm);
+            const articleData = {
+                title: formData.get('title'),
+                category: formData.get('category'),
+                content: formData.get('content'),
+                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
+                images: selectedImages,
+                author: userId
+            };
+
+            if (!articleData.category) {
+                tg.showAlert('Пожалуйста, выберите категорию');
+                return;
+            }
+
+            if (selectedImages.length === 0) {
+                tg.showAlert('Пожалуйста, добавьте хотя бы одну фотографию');
+                return;
+            }
+
+            try {
+                const result = await api.createArticle(articleData);
+                if (result.success) {
+                    modal.classList.remove('active');
+                    articleForm.reset();
+                    imageGallery.innerHTML = '';
+                    selectedImages = [];
+                    await loadArticles();
+                    tg.showAlert('Статья успешно опубликована!');
                 } else {
-                    document.execCommand(command, false, null);
+                    tg.showAlert('Ошибка при публикации статьи: ' + result.error);
                 }
-                button.classList.toggle('active');
-                updatePreview();
+            } catch (error) {
+                console.error('Error creating article:', error);
+                tg.showAlert('Произошла ошибка. Пожалуйста, попробуйте позже.');
             }
         });
 
@@ -647,11 +693,11 @@
             previewTitle.textContent = document.getElementById('article-title').value;
             previewCategory.textContent = document.getElementById('article-category').value.toUpperCase();
             previewAuthor.textContent = `By ${document.getElementById('article-author').value}`;
-            previewContent.innerHTML = editor.innerHTML;
+            previewContent.innerHTML = document.getElementById('article-content').value;
 
             // Update preview images
             previewImages.innerHTML = '';
-            images.forEach(file => {
+            selectedImages.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const div = document.createElement('div');
@@ -663,36 +709,10 @@
             });
 
             // Update preview tags
-            previewTags.innerHTML = Array.from(tags).map(tag => 
-                `<span class="tag">${tag}</span>`
-            ).join('');
+            previewTags.innerHTML = Array.from(document.getElementById('tags').value.split(',').map(tag => 
+                `<span class="tag">${tag.trim()}</span>`
+            )).join('');
         }
-
-        // Publish article
-        publishBtn.addEventListener('click', async () => {
-            const articleData = {
-                title: document.getElementById('article-title').value,
-                category: document.getElementById('article-category').value,
-                content: editor.innerHTML,
-                author: document.getElementById('article-author').value,
-                tags: Array.from(tags),
-                user_id: userId,
-                images: Array.from(images)
-            };
-
-            try {
-                const result = await api.createArticle(articleData);
-                if (result.success) {
-                    tg.showAlert('Article published successfully!');
-                    modal.classList.remove('active');
-                    location.reload();
-                } else {
-                    tg.showAlert('Failed to publish article: ' + result.error);
-                }
-            } catch (error) {
-                tg.showAlert('Error publishing article: ' + error.message);
-            }
-        });
 
         // Initial load
         loadArticles();
