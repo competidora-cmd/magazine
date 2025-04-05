@@ -69,6 +69,18 @@
         "https://raw.githubusercontent.com/competidora-cmd/magazine/main/images/test2.jpg"
       ],
       "created_at": "2025-04-05T23:02:34.613555"
+    },
+    {
+      "id": "1743869104.531221",
+      "title": "fight wid human grace",
+      "content": "мы привыкли, что городское пространство проектируют таким образом, чтобы в нём было удобно каждому. но существует враждебная архитектура — вид дизайна, который заточен под обратное. с помощью маленьких деталей — например, наклонных скамеек, перекладин и шипов на ступеньках — создатели делают среду некомфортной для бездомных.",
+      "category": "culture",
+      "author": 5534462537,
+      "imageUrls": [
+        "https://raw.githubusercontent.com/competidora-cmd/magazine/main/images/1743869099.338034_0.jpg",
+        "https://raw.githubusercontent.com/competidora-cmd/magazine/main/images/1743869101.7647_1.jpg"
+      ],
+      "created_at": "2025-04-05T23:05:04.531226"
     }
   ]
 }
