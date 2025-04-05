@@ -43,61 +43,49 @@
             background: #ffffff;
             padding: 20px 0;
             z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .logo {
             text-align: center;
             padding: 0 15px;
             margin-bottom: 20px;
+            color: var(--primary-pink);
         }
 
-        .logo img {
-            height: 40px;
-            width: auto;
+        .logo h1 {
+            font-size: 24px;
+            font-weight: normal;
+            letter-spacing: 2px;
         }
 
         .categories-container {
             position: relative;
-            overflow: hidden;
+            overflow-x: auto;
             width: 100%;
             padding: 0 15px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .nav-menu {
             display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            transform: translateX(0);
-            transition: transform 0.3s ease;
+            gap: 20px;
+            padding: 10px 0;
+            min-width: min-content;
         }
 
         .nav-menu a {
-            flex: 1;
-            padding: 8px 0;
+            padding: 8px 16px;
             color: var(--dark-gray);
             text-decoration: none;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-align: center;
+            font-size: 14px;
             white-space: nowrap;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            border-radius: 20px;
         }
 
         .nav-menu a.active {
-            color: var(--primary-pink);
-            position: relative;
-        }
-
-        .nav-menu a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
+            color: white;
             background-color: var(--primary-pink);
         }
 
@@ -109,8 +97,8 @@
             right: 0;
             bottom: 0;
             overflow-y: auto;
+            padding: 20px 15px;
             -webkit-overflow-scrolling: touch;
-            padding: 0 15px;
         }
 
         /* Article cards */
@@ -119,13 +107,15 @@
             grid-template-columns: 1fr;
             gap: 30px;
             padding-bottom: 80px;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .article-card {
-            position: relative;
             background: #ffffff;
-            border-radius: 0;
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .article-image {
@@ -179,15 +169,18 @@
             border-radius: 50%;
             background: var(--primary-pink);
             color: white;
-            display: none; /* Hidden by default */
+            display: none;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(255, 0, 102, 0.3);
+            font-size: 24px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(255,0,102,0.3);
             z-index: 1000;
+            cursor: pointer;
         }
 
         .article-constructor.visible {
-            display: flex;
+            display: flex !important;
         }
 
         .constructor-modal {
@@ -399,26 +392,26 @@
     </style>
 </head>
 <body>
-    <header class="header">
+    <div class="header">
         <div class="logo">
-            <img src="https://raw.githubusercontent.com/competidora-cmd/magazine/main/Manege%20Demo%20Light%20300.png" alt="ultramodern" style="height: 40px; width: auto;">
+            <h1>ultramodern</h1>
         </div>
         <div class="categories-container">
             <nav class="nav-menu">
-                <a href="#" class="active" data-category="all">Все</a>
-                <a href="#" data-category="fashion">Мода</a>
-                <a href="#" data-category="beauty">Красота</a>
-                <a href="#" data-category="lifestyle">Лайфстайл</a>
-                <a href="#" data-category="culture">Культура</a>
+                <a href="#" class="active" data-category="all">ВСЕ</a>
+                <a href="#" data-category="fashion">МОДА</a>
+                <a href="#" data-category="beauty">КРАСОТА</a>
+                <a href="#" data-category="lifestyle">ЛАЙФСТАЙЛ</a>
+                <a href="#" data-category="culture">КУЛЬТУРА</a>
             </nav>
         </div>
-    </header>
+    </div>
 
-    <main class="main-content">
+    <div class="main-content">
         <div class="article-grid" id="articleGrid"></div>
-    </main>
+    </div>
 
-    <div class="article-constructor" id="createArticleBtn">+</div>
+    <button class="article-constructor" id="createArticleBtn">+</button>
 
     <div class="constructor-modal" id="constructorModal">
         <button class="preview-toggle">Preview</button>
@@ -426,7 +419,7 @@
             <div class="form-group">
                 <label class="form-label">Заголовок</label>
                 <input type="text" class="form-input" name="title" required>
-            </div>
+                </div>
             <div class="form-group">
                 <label class="form-label">Категория</label>
                 <select class="form-input" name="category" required>
@@ -435,19 +428,19 @@
                     <option value="lifestyle">Лайфстайл</option>
                     <option value="culture">Культура</option>
                 </select>
-            </div>
+                </div>
             <div class="form-group">
                 <label class="form-label">Содержание</label>
                 <textarea class="form-input form-textarea" name="content" required></textarea>
-            </div>
+                </div>
             <div class="form-group">
                 <label class="form-label">Изображения</label>
                 <input type="file" class="form-input" name="images" accept="image/*" multiple>
-            </div>
+                </div>
             <div class="form-group">
                 <label class="form-label">Теги (через запятую)</label>
                 <input type="text" class="form-input" name="tags">
-            </div>
+                </div>
             <button type="submit" class="form-submit">Опубликовать</button>
             <button type="button" class="form-cancel" id="cancelArticle">Отмена</button>
         </form>
@@ -463,271 +456,246 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            
-            // Initialize ArticlesAPI
-            const articlesApi = new ArticlesAPI();
-            
-            // Check if user is editor or admin
-            const urlParams = new URLSearchParams(window.location.search);
-            const isEditor = urlParams.get('is_editor') === 'true';
-            const userId = urlParams.get('user_id');
+        // Initialize Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-            // Show/hide create button based on permissions
-            const createButton = document.getElementById('createArticleBtn');
-            if (isEditor) {
-                createButton.classList.add('visible');
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = parseInt(urlParams.get('user_id'));
+        const isEditor = urlParams.get('is_editor') === 'true';
+
+        // Initialize ArticlesAPI
+        const api = new ArticlesAPI();
+
+        // DOM Elements
+        const articleGrid = document.getElementById('articleGrid');
+        const createArticleBtn = document.getElementById('createArticleBtn');
+        const categoryLinks = document.querySelectorAll('.nav-menu a');
+
+        // Show create article button for admin
+        const userData = api.loadData();
+        if (userId === userData.admin_id || userData.editors.includes(userId)) {
+            createArticleBtn.classList.add('visible');
+            console.log('Showing create button for admin/editor:', userId);
+        }
+
+        // Load and display articles
+        let articles = [];
+        let currentCategory = 'all';
+
+        async function loadArticles() {
+            try {
+                articles = await api.getArticles();
+                displayArticles(currentCategory);
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                articleGrid.innerHTML = '<p>Ошибка загрузки статей. Пожалуйста, попробуйте позже.</p>';
+            }
+        }
+
+        function displayArticles(category) {
+            const filteredArticles = category === 'all' 
+                ? articles 
+                : articles.filter(article => article.category === category);
+
+            if (filteredArticles.length === 0) {
+                articleGrid.innerHTML = '<p style="text-align: center; color: #666;">В этой категории пока нет статей</p>';
+                return;
             }
 
-            // Categories navigation
-            const navMenu = document.querySelector('.nav-menu');
-            const categories = Array.from(navMenu.querySelectorAll('a'));
-            let currentCategoryIndex = 0;
-
-            // Handle category clicks
-            categories.forEach((category, index) => {
-                category.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    setActiveCategory(index);
-                });
-            });
-
-            // Handle swipe for categories
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            document.addEventListener('touchstart', (e) => {
-                touchStartX = e.touches[0].clientX;
-            });
-
-            document.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].clientX;
-                handleSwipe();
-            });
-
-            function handleSwipe() {
-                const swipeThreshold = 50;
-                const diff = touchStartX - touchEndX;
-
-                if (Math.abs(diff) > swipeThreshold) {
-                    if (diff > 0 && currentCategoryIndex < categories.length - 1) {
-                        // Swipe left
-                        setActiveCategory(currentCategoryIndex + 1);
-                    } else if (diff < 0 && currentCategoryIndex > 0) {
-                        // Swipe right
-                        setActiveCategory(currentCategoryIndex - 1);
-                    }
-                }
-            }
-
-            function setActiveCategory(index) {
-                categories.forEach(cat => cat.classList.remove('active'));
-                categories[index].classList.add('active');
-                currentCategoryIndex = index;
-                loadArticlesByCategory(categories[index].dataset.category);
-            }
-
-            async function loadArticlesByCategory(category) {
-                const articles = await articlesApi.getArticles();
-                const filteredArticles = articles.filter(article => 
-                    article.category.toLowerCase() === category.toLowerCase()
-                );
-                
-                const grid = document.getElementById('articleGrid');
-                grid.innerHTML = '';
-
-                filteredArticles.forEach(article => {
-                    const articleElement = createArticleElement(article);
-                    grid.appendChild(articleElement);
-                });
-            }
-
-            function createArticleElement(article) {
-                const element = document.createElement('article');
-                element.className = 'article-card';
-                element.innerHTML = `
+            articleGrid.innerHTML = filteredArticles.map(article => `
+                <article class="article-card">
                     <div class="article-image">
-                        <img src="${article.imageUrls?.[0] || 'https://via.placeholder.com/600x750'}" alt="${article.title}">
+                        <img src="${article.imageUrls?.[0] || 'placeholder.jpg'}" alt="${article.title}">
                     </div>
                     <div class="article-info">
-                        <div class="article-category">${article.category.toUpperCase()}</div>
-                        <h3 class="article-title">${article.title}</h3>
-                        <div class="article-author">By ${article.author}</div>
+                        <div class="article-category">${article.category}</div>
+                        <h2 class="article-title">${article.title}</h2>
+                        <div class="article-author">By ${article.author || 'Anonymous'}</div>
                     </div>
-                `;
-                return element;
+                </article>
+            `).join('');
+        }
+
+        // Category navigation
+        categoryLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                categoryLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                currentCategory = link.dataset.category;
+                displayArticles(currentCategory);
+            });
+        });
+
+        // Article Constructor
+        const constructor = document.getElementById('createArticleBtn');
+        const modal = document.getElementById('constructorModal');
+        const tagInput = document.getElementById('tag-input');
+        const tagContainer = document.getElementById('tag-container');
+        const publishBtn = document.querySelector('.form-submit');
+
+        constructor.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
             }
+        });
 
-            // Load initial category
-            loadArticlesByCategory('fashion');
+        // Tag handling
+        let tags = new Set();
 
-            // Article Constructor
-            const constructor = document.getElementById('createArticleBtn');
-            const modal = document.getElementById('constructorModal');
-            const tagInput = document.getElementById('tag-input');
-            const tagContainer = document.getElementById('tag-container');
-            const publishBtn = document.querySelector('.form-submit');
+        tagInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && tagInput.value.trim()) {
+                e.preventDefault();
+                const tag = tagInput.value.trim();
+                if (!tags.has(tag)) {
+                    tags.add(tag);
+                    const tagElement = document.createElement('div');
+                    tagElement.className = 'tag';
+                    tagElement.innerHTML = `
+                        ${tag}
+                        <span class="tag-remove">×</span>
+                    `;
+                    tagContainer.insertBefore(tagElement, tagInput);
+                    tagInput.value = '';
 
-            constructor.addEventListener('click', () => {
-                modal.classList.add('active');
-            });
-
-            // Close modal when clicking outside
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
+                    // Remove tag
+                    tagElement.querySelector('.tag-remove').addEventListener('click', () => {
+                        tags.delete(tag);
+                        tagElement.remove();
+                    });
                 }
-            });
+            }
+        });
 
-            // Tag handling
-            let tags = new Set();
+        // Image handling
+        const imageInput = document.getElementById('images');
+        const imageGallery = document.getElementById('preview-images');
+        const images = new Set();
 
-            tagInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && tagInput.value.trim()) {
-                    e.preventDefault();
-                    const tag = tagInput.value.trim();
-                    if (!tags.has(tag)) {
-                        tags.add(tag);
-                        const tagElement = document.createElement('div');
-                        tagElement.className = 'tag';
-                        tagElement.innerHTML = `
-                            ${tag}
-                            <span class="tag-remove">×</span>
-                        `;
-                        tagContainer.insertBefore(tagElement, tagInput);
-                        tagInput.value = '';
-
-                        // Remove tag
-                        tagElement.querySelector('.tag-remove').addEventListener('click', () => {
-                            tags.delete(tag);
-                            tagElement.remove();
-                        });
-                    }
-                }
-            });
-
-            // Image handling
-            const imageInput = document.getElementById('images');
-            const imageGallery = document.getElementById('preview-images');
-            const images = new Set();
-
-            imageInput.addEventListener('change', (e) => {
-                const files = e.target.files;
-                for (let file of files) {
-                    if (!images.has(file)) {
-                        images.add(file);
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            const div = document.createElement('div');
-                            div.className = 'image-preview';
-                            div.innerHTML = `
-                                <img src="${e.target.result}" alt="Article image">
-                                <div class="image-remove">×</div>
-                            `;
-                            imageGallery.appendChild(div);
-
-                            div.querySelector('.image-remove').addEventListener('click', () => {
-                                images.delete(file);
-                                div.remove();
-                                updatePreview();
-                            });
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                }
-                updatePreview();
-            });
-
-            // Rich text editor
-            const toolbar = document.querySelector('.toolbar');
-            const editor = document.getElementById('article-content');
-
-            toolbar.addEventListener('click', (e) => {
-                const button = e.target.closest('button');
-                if (!button) return;
-
-                const command = button.dataset.command;
-                if (command) {
-                    e.preventDefault();
-                    if (['h2', 'h3', 'quote'].includes(command)) {
-                        const tag = command === 'quote' ? 'blockquote' : command;
-                        document.execCommand('formatBlock', false, `<${tag}>`);
-                    } else {
-                        document.execCommand(command, false, null);
-                    }
-                    button.classList.toggle('active');
-                    updatePreview();
-                }
-            });
-
-            // Preview handling
-            const previewToggle = document.querySelector('.preview-toggle');
-            const previewTitle = document.getElementById('preview-title');
-            const previewCategory = document.getElementById('preview-category');
-            const previewAuthor = document.getElementById('preview-author');
-            const previewContent = document.getElementById('preview-content');
-            const previewTags = document.getElementById('preview-tags');
-            const previewImages = document.getElementById('preview-images');
-
-            previewToggle.addEventListener('click', () => {
-                modal.classList.toggle('preview-mode');
-                previewToggle.textContent = modal.classList.contains('preview-mode') ? 'Edit' : 'Preview';
-                updatePreview();
-            });
-
-            function updatePreview() {
-                previewTitle.textContent = document.getElementById('article-title').value;
-                previewCategory.textContent = document.getElementById('article-category').value.toUpperCase();
-                previewAuthor.textContent = `By ${document.getElementById('article-author').value}`;
-                previewContent.innerHTML = editor.innerHTML;
-
-                // Update preview images
-                previewImages.innerHTML = '';
-                images.forEach(file => {
+        imageInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            for (let file of files) {
+                if (!images.has(file)) {
+                    images.add(file);
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         const div = document.createElement('div');
                         div.className = 'image-preview';
-                        div.innerHTML = `<img src="${e.target.result}" alt="Article image">`;
-                        previewImages.appendChild(div);
+                        div.innerHTML = `
+                            <img src="${e.target.result}" alt="Article image">
+                            <div class="image-remove">×</div>
+                        `;
+                        imageGallery.appendChild(div);
+
+                        div.querySelector('.image-remove').addEventListener('click', () => {
+                            images.delete(file);
+                            div.remove();
+                            updatePreview();
+                        });
                     };
                     reader.readAsDataURL(file);
-                });
-
-                // Update preview tags
-                previewTags.innerHTML = Array.from(tags).map(tag => 
-                    `<span class="tag">${tag}</span>`
-                ).join('');
-            }
-
-            // Publish article
-            publishBtn.addEventListener('click', async () => {
-                const articleData = {
-                    title: document.getElementById('article-title').value,
-                    category: document.getElementById('article-category').value,
-                    content: editor.innerHTML,
-                    author: document.getElementById('article-author').value,
-                    tags: Array.from(tags),
-                    user_id: userId,
-                    images: Array.from(images)
-                };
-
-                try {
-                    const result = await articlesApi.createArticle(articleData);
-                    if (result.success) {
-                        tg.showAlert('Article published successfully!');
-                        modal.classList.remove('active');
-                        location.reload();
-                    } else {
-                        tg.showAlert('Failed to publish article: ' + result.error);
-                    }
-                } catch (error) {
-                    tg.showAlert('Error publishing article: ' + error.message);
                 }
-            });
+            }
+            updatePreview();
         });
+
+        // Rich text editor
+        const toolbar = document.querySelector('.toolbar');
+        const editor = document.getElementById('article-content');
+
+        toolbar.addEventListener('click', (e) => {
+            const button = e.target.closest('button');
+            if (!button) return;
+
+            const command = button.dataset.command;
+            if (command) {
+            e.preventDefault();
+                if (['h2', 'h3', 'quote'].includes(command)) {
+                    const tag = command === 'quote' ? 'blockquote' : command;
+                    document.execCommand('formatBlock', false, `<${tag}>`);
+                } else {
+                    document.execCommand(command, false, null);
+                }
+                button.classList.toggle('active');
+                updatePreview();
+            }
+        });
+
+        // Preview handling
+        const previewToggle = document.querySelector('.preview-toggle');
+        const previewTitle = document.getElementById('preview-title');
+        const previewCategory = document.getElementById('preview-category');
+        const previewAuthor = document.getElementById('preview-author');
+        const previewContent = document.getElementById('preview-content');
+        const previewTags = document.getElementById('preview-tags');
+        const previewImages = document.getElementById('preview-images');
+
+        previewToggle.addEventListener('click', () => {
+            modal.classList.toggle('preview-mode');
+            previewToggle.textContent = modal.classList.contains('preview-mode') ? 'Edit' : 'Preview';
+            updatePreview();
+        });
+
+        function updatePreview() {
+            previewTitle.textContent = document.getElementById('article-title').value;
+            previewCategory.textContent = document.getElementById('article-category').value.toUpperCase();
+            previewAuthor.textContent = `By ${document.getElementById('article-author').value}`;
+            previewContent.innerHTML = editor.innerHTML;
+
+            // Update preview images
+            previewImages.innerHTML = '';
+            images.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const div = document.createElement('div');
+                    div.className = 'image-preview';
+                    div.innerHTML = `<img src="${e.target.result}" alt="Article image">`;
+                    previewImages.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Update preview tags
+            previewTags.innerHTML = Array.from(tags).map(tag => 
+                `<span class="tag">${tag}</span>`
+            ).join('');
+        }
+
+        // Publish article
+        publishBtn.addEventListener('click', async () => {
+            const articleData = {
+                title: document.getElementById('article-title').value,
+                category: document.getElementById('article-category').value,
+                content: editor.innerHTML,
+                author: document.getElementById('article-author').value,
+                tags: Array.from(tags),
+                user_id: userId,
+                images: Array.from(images)
+            };
+
+            try {
+                const result = await api.createArticle(articleData);
+                if (result.success) {
+                    tg.showAlert('Article published successfully!');
+                    modal.classList.remove('active');
+                    location.reload();
+                } else {
+                    tg.showAlert('Failed to publish article: ' + result.error);
+                }
+            } catch (error) {
+                tg.showAlert('Error publishing article: ' + error.message);
+            }
+        });
+
+        // Initial load
+        loadArticles();
     </script>
 </body>
 </html>
