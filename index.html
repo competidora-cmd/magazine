@@ -405,83 +405,52 @@
         </div>
         <div class="categories-container">
             <nav class="nav-menu">
-                <a href="#fashion" class="active">FASHION</a>
-                <a href="#beauty">BEAUTY</a>
-                <a href="#lifestyle">LIFESTYLE</a>
+                <a href="#" class="active" data-category="all">Все</a>
+                <a href="#" data-category="fashion">Мода</a>
+                <a href="#" data-category="beauty">Красота</a>
+                <a href="#" data-category="lifestyle">Лайфстайл</a>
+                <a href="#" data-category="culture">Культура</a>
             </nav>
         </div>
     </header>
 
     <main class="main-content">
-        <div class="article-grid">
-            <!-- Articles will be loaded here -->
-        </div>
+        <div class="article-grid" id="articleGrid"></div>
     </main>
 
-    <div class="article-constructor">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-            <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-        </svg>
-    </div>
+    <div class="article-constructor" id="createArticleBtn">+</div>
 
-    <div class="constructor-modal">
+    <div class="constructor-modal" id="constructorModal">
         <button class="preview-toggle">Preview</button>
-        <div class="constructor-form">
+        <form class="constructor-form" id="articleForm">
             <div class="form-group">
-                <label class="form-label">Article Title</label>
-                <input type="text" class="form-input" id="article-title" placeholder="Enter article title...">
+                <label class="form-label">Заголовок</label>
+                <input type="text" class="form-input" name="title" required>
             </div>
-
             <div class="form-group">
-                <label class="form-label">Category</label>
-                <select class="form-input" id="article-category">
-                    <option value="fashion">Fashion</option>
-                    <option value="beauty">Beauty</option>
-                    <option value="lifestyle">Lifestyle</option>
-                    <option value="culture">Culture</option>
-                    <option value="shows">Shows</option>
-                    <option value="shopping">Shopping</option>
+                <label class="form-label">Категория</label>
+                <select class="form-input" name="category" required>
+                    <option value="fashion">Мода</option>
+                    <option value="beauty">Красота</option>
+                    <option value="lifestyle">Лайфстайл</option>
+                    <option value="culture">Культура</option>
                 </select>
             </div>
-
             <div class="form-group">
-                <label class="form-label">Cover Image</label>
-                <input type="file" accept="image/*" id="article-image" class="form-input">
+                <label class="form-label">Содержание</label>
+                <textarea class="form-input form-textarea" name="content" required></textarea>
             </div>
-
             <div class="form-group">
-                <label class="form-label">Images</label>
-                <input type="file" accept="image/*" id="article-images" class="form-input" multiple>
-                <div class="image-gallery" id="image-gallery"></div>
+                <label class="form-label">Изображения</label>
+                <input type="file" class="form-input" name="images" accept="image/*" multiple>
             </div>
-
             <div class="form-group">
-                <label class="form-label">Content</label>
-                <div class="toolbar">
-                    <button type="button" data-command="bold"><strong>B</strong></button>
-                    <button type="button" data-command="italic"><em>I</em></button>
-                    <button type="button" data-command="underline"><u>U</u></button>
-                    <button type="button" data-command="h2">H2</button>
-                    <button type="button" data-command="h3">H3</button>
-                    <button type="button" data-command="quote">Quote</button>
-                </div>
-                <div class="form-input form-textarea" id="article-content" contenteditable="true"></div>
+                <label class="form-label">Теги (через запятую)</label>
+                <input type="text" class="form-input" name="tags">
             </div>
-
-            <div class="form-group">
-                <label class="form-label">Tags</label>
-                <div class="tag-input" id="tag-container">
-                    <input type="text" class="form-input" id="tag-input" placeholder="Add tags...">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Author</label>
-                <input type="text" class="form-input" id="article-author" placeholder="Enter author name...">
-            </div>
-
-            <button class="submit-btn" id="publish-article">PUBLISH</button>
-        </div>
+            <button type="submit" class="form-submit">Опубликовать</button>
+            <button type="button" class="form-cancel" id="cancelArticle">Отмена</button>
+        </form>
 
         <div class="article-preview">
             <h1 id="preview-title"></h1>
@@ -507,7 +476,7 @@
             const userId = urlParams.get('user_id');
 
             // Show/hide create button based on permissions
-            const createButton = document.querySelector('.article-constructor');
+            const createButton = document.getElementById('createArticleBtn');
             if (isEditor) {
                 createButton.classList.add('visible');
             }
@@ -557,7 +526,7 @@
                 categories.forEach(cat => cat.classList.remove('active'));
                 categories[index].classList.add('active');
                 currentCategoryIndex = index;
-                loadArticlesByCategory(categories[index].getAttribute('href').substring(1));
+                loadArticlesByCategory(categories[index].dataset.category);
             }
 
             async function loadArticlesByCategory(category) {
@@ -566,7 +535,7 @@
                     article.category.toLowerCase() === category.toLowerCase()
                 );
                 
-                const grid = document.querySelector('.article-grid');
+                const grid = document.getElementById('articleGrid');
                 grid.innerHTML = '';
 
                 filteredArticles.forEach(article => {
@@ -595,11 +564,11 @@
             loadArticlesByCategory('fashion');
 
             // Article Constructor
-            const constructor = document.querySelector('.article-constructor');
-            const modal = document.querySelector('.constructor-modal');
+            const constructor = document.getElementById('createArticleBtn');
+            const modal = document.getElementById('constructorModal');
             const tagInput = document.getElementById('tag-input');
             const tagContainer = document.getElementById('tag-container');
-            const publishBtn = document.getElementById('publish-article');
+            const publishBtn = document.querySelector('.form-submit');
 
             constructor.addEventListener('click', () => {
                 modal.classList.add('active');
@@ -640,8 +609,8 @@
             });
 
             // Image handling
-            const imageInput = document.getElementById('article-images');
-            const imageGallery = document.getElementById('image-gallery');
+            const imageInput = document.getElementById('images');
+            const imageGallery = document.getElementById('preview-images');
             const images = new Set();
 
             imageInput.addEventListener('change', (e) => {
