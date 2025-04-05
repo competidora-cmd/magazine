@@ -12,6 +12,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         :root {
@@ -27,6 +28,10 @@
             background-color: #ffffff;
             color: var(--dark-gray);
             line-height: 1.4;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
         }
 
         /* Header styles */
@@ -36,14 +41,14 @@
             left: 0;
             right: 0;
             background: #ffffff;
-            padding: 20px 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 20px 0;
             z-index: 1000;
         }
 
         .logo {
             text-align: center;
-            margin-bottom: 15px;
+            padding: 0 15px;
+            margin-bottom: 20px;
         }
 
         .logo img {
@@ -51,38 +56,60 @@
             width: auto;
         }
 
-        .nav-menu {
-            display: flex;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            padding: 10px 0;
-            justify-content: center;
+        .categories-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            padding: 0 15px;
         }
 
-        .nav-menu::-webkit-scrollbar {
-            display: none;
+        .nav-menu {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
         }
 
         .nav-menu a {
-            flex: 0 0 auto;
-            padding: 8px 20px;
+            flex: 1;
+            padding: 8px 0;
             color: var(--dark-gray);
             text-decoration: none;
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            text-align: center;
             white-space: nowrap;
             transition: color 0.3s ease;
         }
 
-        .nav-menu a:hover {
+        .nav-menu a.active {
             color: var(--primary-pink);
+            position: relative;
+        }
+
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-pink);
         }
 
         /* Main content */
         .main-content {
-            margin-top: 120px;
+            position: fixed;
+            top: 120px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             padding: 0 15px;
         }
 
@@ -90,8 +117,8 @@
         .article-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 40px;
-            margin-top: 30px;
+            gap: 30px;
+            padding-bottom: 80px;
         }
 
         .article-card {
@@ -99,11 +126,6 @@
             background: #ffffff;
             border-radius: 0;
             overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .article-card:hover {
-            transform: translateY(-5px);
         }
 
         .article-image {
@@ -120,15 +142,10 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .article-card:hover .article-image img {
-            transform: scale(1.05);
         }
 
         .article-info {
-            padding: 20px 0;
+            padding: 15px 0;
         }
 
         .article-category {
@@ -140,11 +157,10 @@
         }
 
         .article-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: normal;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             line-height: 1.3;
-            letter-spacing: 0.5px;
         }
 
         .article-author {
@@ -153,31 +169,25 @@
             font-style: italic;
         }
 
-        /* Article Constructor */
+        /* Create Article Button */
         .article-constructor {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: var(--primary-pink);
             width: 56px;
             height: 56px;
             border-radius: 50%;
-            display: flex;
+            background: var(--primary-pink);
+            color: white;
+            display: none; /* Hidden by default */
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(255, 0, 102, 0.3);
-            cursor: pointer;
-            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 0, 102, 0.3);
+            z-index: 1000;
         }
 
-        .article-constructor:hover {
-            transform: scale(1.1);
-        }
-
-        .article-constructor svg {
-            width: 24px;
-            height: 24px;
-            fill: #ffffff;
+        .article-constructor.visible {
+            display: flex;
         }
 
         .constructor-modal {
@@ -391,58 +401,26 @@
 <body>
     <header class="header">
         <div class="logo">
-            <img src="https://raw.githubusercontent.com/competidora-cmd/magazine/main/Manege%20Demo%20Light%20300.png" alt="ultramodern" style="height: 60px; width: auto;">
+            <img src="https://raw.githubusercontent.com/competidora-cmd/magazine/main/Manege%20Demo%20Light%20300.png" alt="ultramodern" style="height: 40px; width: auto;">
         </div>
-        <nav class="nav-menu">
-            <a href="#fashion">Fashion</a>
-            <a href="#beauty">Beauty</a>
-            <a href="#lifestyle">Lifestyle</a>
-            <a href="#culture">Culture</a>
-            <a href="#shows">Shows</a>
-            <a href="#shopping">Shopping</a>
-        </nav>
+        <div class="categories-container">
+            <nav class="nav-menu">
+                <a href="#fashion" class="active">FASHION</a>
+                <a href="#beauty">BEAUTY</a>
+                <a href="#lifestyle">LIFESTYLE</a>
+            </nav>
+        </div>
     </header>
 
     <main class="main-content">
         <div class="article-grid">
-            <article class="article-card featured-article">
-                <div class="article-image">
-                    <img src="https://via.placeholder.com/800x800" alt="Featured Article">
-                </div>
-                <div class="article-info">
-                    <div class="article-category">EDITOR'S CHOICE</div>
-                    <h2 class="article-title">The Future of Fashion: Where Style Meets Innovation</h2>
-                    <div class="article-author">By ALEXANDRA SMITH</div>
-                </div>
-            </article>
-
-            <article class="article-card">
-                <div class="article-image">
-                    <img src="https://via.placeholder.com/600x750" alt="Article">
-                </div>
-                <div class="article-info">
-                    <div class="article-category">TRENDS</div>
-                    <h3 class="article-title">Spring 2025: The Return of Elegance</h3>
-                    <div class="article-author">By MARIE CLAIRE</div>
-                </div>
-            </article>
-
-            <article class="article-card">
-                <div class="article-image">
-                    <img src="https://via.placeholder.com/600x750" alt="Article">
-                </div>
-                <div class="article-info">
-                    <div class="article-category">STYLE</div>
-                    <h3 class="article-title">The Art of Minimalism in Modern Wardrobes</h3>
-                    <div class="article-author">By JAMES WILSON</div>
-                </div>
-            </article>
+            <!-- Articles will be loaded here -->
         </div>
     </main>
 
     <div class="article-constructor">
-        <svg viewBox="0 0 24 24">
-            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
         </svg>
     </div>
 
@@ -523,9 +501,98 @@
             // Initialize ArticlesAPI
             const articlesApi = new ArticlesAPI();
             
-            // Set theme colors
-            tg.setHeaderColor('#ffffff');
-            tg.setBackgroundColor('#ffffff');
+            // Check if user is editor or admin
+            const urlParams = new URLSearchParams(window.location.search);
+            const isEditor = urlParams.get('is_editor') === 'true';
+            const userId = urlParams.get('user_id');
+
+            // Show/hide create button based on permissions
+            const createButton = document.querySelector('.article-constructor');
+            if (isEditor) {
+                createButton.classList.add('visible');
+            }
+
+            // Categories navigation
+            const navMenu = document.querySelector('.nav-menu');
+            const categories = Array.from(navMenu.querySelectorAll('a'));
+            let currentCategoryIndex = 0;
+
+            // Handle category clicks
+            categories.forEach((category, index) => {
+                category.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    setActiveCategory(index);
+                });
+            });
+
+            // Handle swipe for categories
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+            });
+
+            document.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].clientX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0 && currentCategoryIndex < categories.length - 1) {
+                        // Swipe left
+                        setActiveCategory(currentCategoryIndex + 1);
+                    } else if (diff < 0 && currentCategoryIndex > 0) {
+                        // Swipe right
+                        setActiveCategory(currentCategoryIndex - 1);
+                    }
+                }
+            }
+
+            function setActiveCategory(index) {
+                categories.forEach(cat => cat.classList.remove('active'));
+                categories[index].classList.add('active');
+                currentCategoryIndex = index;
+                loadArticlesByCategory(categories[index].getAttribute('href').substring(1));
+            }
+
+            async function loadArticlesByCategory(category) {
+                const articles = await articlesApi.getArticles();
+                const filteredArticles = articles.filter(article => 
+                    article.category.toLowerCase() === category.toLowerCase()
+                );
+                
+                const grid = document.querySelector('.article-grid');
+                grid.innerHTML = '';
+
+                filteredArticles.forEach(article => {
+                    const articleElement = createArticleElement(article);
+                    grid.appendChild(articleElement);
+                });
+            }
+
+            function createArticleElement(article) {
+                const element = document.createElement('article');
+                element.className = 'article-card';
+                element.innerHTML = `
+                    <div class="article-image">
+                        <img src="${article.imageUrls?.[0] || 'https://via.placeholder.com/600x750'}" alt="${article.title}">
+                    </div>
+                    <div class="article-info">
+                        <div class="article-category">${article.category.toUpperCase()}</div>
+                        <h3 class="article-title">${article.title}</h3>
+                        <div class="article-author">By ${article.author}</div>
+                    </div>
+                `;
+                return element;
+            }
+
+            // Load initial category
+            loadArticlesByCategory('fashion');
 
             // Article Constructor
             const constructor = document.querySelector('.article-constructor');
@@ -571,15 +638,6 @@
                     }
                 }
             });
-
-            // Check if user is editor
-            const urlParams = new URLSearchParams(window.location.search);
-            const isEditor = urlParams.get('is_editor') === 'true';
-            const userId = urlParams.get('user_id');
-
-            if (!isEditor) {
-                document.querySelector('.article-constructor').style.display = 'none';
-            }
 
             // Image handling
             const imageInput = document.getElementById('article-images');
@@ -700,37 +758,6 @@
                     tg.showAlert('Error publishing article: ' + error.message);
                 }
             });
-
-            // Load existing articles
-            async function loadArticles() {
-                const articles = await articlesApi.getArticles();
-                const grid = document.querySelector('.article-grid');
-                grid.innerHTML = ''; // Clear existing articles
-
-                articles.forEach(article => {
-                    const articleElement = createArticleElement(article);
-                    grid.appendChild(articleElement);
-                });
-            }
-
-            function createArticleElement(article) {
-                const element = document.createElement('article');
-                element.className = 'article-card';
-                element.innerHTML = `
-                    <div class="article-image">
-                        <img src="${article.imageUrls?.[0] || 'https://via.placeholder.com/600x750'}" alt="${article.title}">
-                    </div>
-                    <div class="article-info">
-                        <div class="article-category">${article.category.toUpperCase()}</div>
-                        <h3 class="article-title">${article.title}</h3>
-                        <div class="article-author">By ${article.author}</div>
-                    </div>
-                `;
-                return element;
-            }
-
-            // Load articles when page loads
-            loadArticles();
         });
     </script>
 </body>
