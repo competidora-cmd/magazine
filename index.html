@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ultramodern Magazine</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="api/articles.js"></script>
     <style>
         /* Reset and base styles */
         * {
@@ -519,6 +520,9 @@
             const tg = window.Telegram.WebApp;
             tg.expand();
             
+            // Initialize ArticlesAPI
+            const articlesApi = new ArticlesAPI();
+            
             // Set theme colors
             tg.setHeaderColor('#ffffff');
             tg.setBackgroundColor('#ffffff');
@@ -673,35 +677,60 @@
 
             // Publish article
             publishBtn.addEventListener('click', async () => {
-                const formData = new FormData();
-                formData.append('title', document.getElementById('article-title').value);
-                formData.append('category', document.getElementById('article-category').value);
-                formData.append('content', editor.innerHTML);
-                formData.append('author', document.getElementById('article-author').value);
-                formData.append('tags', JSON.stringify(Array.from(tags)));
-                formData.append('user_id', userId);
-
-                images.forEach(file => {
-                    formData.append('images[]', file);
-                });
+                const articleData = {
+                    title: document.getElementById('article-title').value,
+                    category: document.getElementById('article-category').value,
+                    content: editor.innerHTML,
+                    author: document.getElementById('article-author').value,
+                    tags: Array.from(tags),
+                    user_id: userId,
+                    images: Array.from(images)
+                };
 
                 try {
-                    const response = await fetch('/api/articles', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (response.ok) {
+                    const result = await articlesApi.createArticle(articleData);
+                    if (result.success) {
                         tg.showAlert('Article published successfully!');
                         modal.classList.remove('active');
                         location.reload();
                     } else {
-                        tg.showAlert('Failed to publish article');
+                        tg.showAlert('Failed to publish article: ' + result.error);
                     }
                 } catch (error) {
-                    tg.showAlert('Error publishing article');
+                    tg.showAlert('Error publishing article: ' + error.message);
                 }
             });
+
+            // Load existing articles
+            async function loadArticles() {
+                const articles = await articlesApi.getArticles();
+                const grid = document.querySelector('.article-grid');
+                grid.innerHTML = ''; // Clear existing articles
+
+                articles.forEach(article => {
+                    const articleElement = createArticleElement(article);
+                    grid.appendChild(articleElement);
+                });
+            }
+
+            function createArticleElement(article) {
+                const element = document.createElement('article');
+                element.className = 'article-card';
+                element.innerHTML = `
+                    <div class="article-image">
+                        <img src="${article.imageUrls?.[0] || 'https://via.placeholder.com/600x750'}" alt="${article.title}">
+                    </div>
+                    <div class="article-info">
+                        <div class="article-category">${article.category.toUpperCase()}</div>
+                        <h3 class="article-title">${article.title}</h3>
+                        <div class="article-author">By ${article.author}</div>
+                    </div>
+                `;
+                return element;
+            }
+
+            // Load articles when page loads
+            loadArticles();
         });
     </script>
 </body>
