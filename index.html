@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Luxury Magazine</title>
+    <title>Ultramodern Magazine</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         /* Reset and base styles */
@@ -13,10 +13,18 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-pink: #FF0066;
+            --secondary-pink: #FF69B4;
+            --light-gray: #F5F5F5;
+            --dark-gray: #333333;
+            --spacing-unit: 8px;
+        }
+
         body {
             font-family: 'Times New Roman', serif;
             background-color: #ffffff;
-            color: #1a1a1a;
+            color: var(--dark-gray);
             line-height: 1.4;
         }
 
@@ -27,18 +35,18 @@
             left: 0;
             right: 0;
             background: #ffffff;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             z-index: 1000;
         }
 
         .logo {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .logo img {
-            height: 30px;
+            height: 40px;
             width: auto;
         }
 
@@ -47,7 +55,8 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
-            padding: 5px 0;
+            padding: 10px 0;
+            justify-content: center;
         }
 
         .nav-menu::-webkit-scrollbar {
@@ -56,27 +65,32 @@
 
         .nav-menu a {
             flex: 0 0 auto;
-            padding: 8px 15px;
-            color: #1a1a1a;
+            padding: 8px 20px;
+            color: var(--dark-gray);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             white-space: nowrap;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary-pink);
         }
 
         /* Main content */
         .main-content {
-            margin-top: 100px;
-            padding: 15px;
+            margin-top: 120px;
+            padding: 0 15px;
         }
 
         /* Article cards */
         .article-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 30px;
-            margin-top: 20px;
+            gap: 40px;
+            margin-top: 30px;
         }
 
         .article-card {
@@ -84,12 +98,17 @@
             background: #ffffff;
             border-radius: 0;
             overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
         }
 
         .article-image {
             position: relative;
-            padding-bottom: 125%; /* 4:5 aspect ratio */
-            background: #f5f5f5;
+            padding-bottom: 125%;
+            background: var(--light-gray);
             overflow: hidden;
         }
 
@@ -100,43 +119,159 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .article-card:hover .article-image img {
+            transform: scale(1.05);
         }
 
         .article-info {
-            padding: 15px 0;
+            padding: 20px 0;
         }
 
         .article-category {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-            color: #666;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            color: var(--primary-pink);
         }
 
         .article-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: normal;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             line-height: 1.3;
+            letter-spacing: 0.5px;
         }
 
         .article-author {
             font-size: 12px;
             color: #666;
+            font-style: italic;
         }
 
-        /* Featured article */
-        .featured-article {
-            margin-bottom: 30px;
+        /* Article Constructor */
+        .article-constructor {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-pink);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 0, 102, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
 
-        .featured-article .article-image {
-            padding-bottom: 100%;
+        .article-constructor:hover {
+            transform: scale(1.1);
         }
 
-        .featured-article .article-title {
-            font-size: 24px;
+        .article-constructor svg {
+            width: 24px;
+            height: 24px;
+            fill: #ffffff;
+        }
+
+        .constructor-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .constructor-modal.active {
+            display: block;
+        }
+
+        .constructor-form {
+            max-width: 600px;
+            margin: 60px auto;
+            background: #ffffff;
+            padding: 30px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark-gray);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-pink);
+            outline: none;
+        }
+
+        .form-textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .tag-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .tag {
+            background: var(--light-gray);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            color: var(--dark-gray);
+        }
+
+        .submit-btn {
+            background: var(--primary-pink);
+            color: #ffffff;
+            border: none;
+            padding: 14px 32px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #e6005c;
         }
 
         @media (min-width: 768px) {
@@ -148,12 +283,114 @@
                 grid-column: 1 / -1;
             }
         }
+
+        /* Article Constructor Improvements */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .image-preview {
+            position: relative;
+            padding-bottom: 100%;
+            background: var(--light-gray);
+            overflow: hidden;
+        }
+
+        .image-preview img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: var(--light-gray);
+            border-radius: 4px;
+        }
+
+        .toolbar button {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toolbar button:hover {
+            background: var(--primary-pink);
+            color: white;
+            border-color: var(--primary-pink);
+        }
+
+        .toolbar button.active {
+            background: var(--primary-pink);
+            color: white;
+            border-color: var(--primary-pink);
+        }
+
+        .preview-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .preview-toggle:hover {
+            background-color: #e6005c;
+        }
+
+        .preview-mode .constructor-form {
+            display: none;
+        }
+
+        .article-preview {
+            display: none;
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 30px;
+            background: white;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .preview-mode .article-preview {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="logo">
-            <img src="logo.png" alt="Magazine Logo">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAAAAA..." alt="ultramodern">
         </div>
         <nav class="nav-menu">
             <a href="#fashion">Fashion</a>
@@ -172,9 +409,9 @@
                     <img src="https://via.placeholder.com/800x800" alt="Featured Article">
                 </div>
                 <div class="article-info">
-                    <div class="article-category">INTERVIEW</div>
-                    <h2 class="article-title">"I don't really think about that whole whirlwind of excitement. I just keep my head down and get on with it."</h2>
-                    <div class="article-author">PAR ALEXANDRE MARAIN</div>
+                    <div class="article-category">EDITOR'S CHOICE</div>
+                    <h2 class="article-title">The Future of Fashion: Where Style Meets Innovation</h2>
+                    <div class="article-author">By ALEXANDRA SMITH</div>
                 </div>
             </article>
 
@@ -183,9 +420,9 @@
                     <img src="https://via.placeholder.com/600x750" alt="Article">
                 </div>
                 <div class="article-info">
-                    <div class="article-category">COVER</div>
-                    <h3 class="article-title">The renaissance of chic in the December/January 2025 issue</h3>
-                    <div class="article-author">PAR CLAIRE THOMSON-JONVILLE</div>
+                    <div class="article-category">TRENDS</div>
+                    <h3 class="article-title">Spring 2025: The Return of Elegance</h3>
+                    <div class="article-author">By MARIE CLAIRE</div>
                 </div>
             </article>
 
@@ -194,17 +431,91 @@
                     <img src="https://via.placeholder.com/600x750" alt="Article">
                 </div>
                 <div class="article-info">
-                    <div class="article-category">FASHION</div>
-                    <h3 class="article-title">Nobody did model-off-duty style like the '90s supermodels</h3>
-                    <div class="article-author">PAR CHRISTIAN ALLAIRE</div>
+                    <div class="article-category">STYLE</div>
+                    <h3 class="article-title">The Art of Minimalism in Modern Wardrobes</h3>
+                    <div class="article-author">By JAMES WILSON</div>
                 </div>
             </article>
         </div>
     </main>
 
+    <div class="article-constructor">
+        <svg viewBox="0 0 24 24">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+    </div>
+
+    <div class="constructor-modal">
+        <button class="preview-toggle">Preview</button>
+        <div class="constructor-form">
+            <div class="form-group">
+                <label class="form-label">Article Title</label>
+                <input type="text" class="form-input" id="article-title" placeholder="Enter article title...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-input" id="article-category">
+                    <option value="fashion">Fashion</option>
+                    <option value="beauty">Beauty</option>
+                    <option value="lifestyle">Lifestyle</option>
+                    <option value="culture">Culture</option>
+                    <option value="shows">Shows</option>
+                    <option value="shopping">Shopping</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Cover Image</label>
+                <input type="file" accept="image/*" id="article-image" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Images</label>
+                <input type="file" accept="image/*" id="article-images" class="form-input" multiple>
+                <div class="image-gallery" id="image-gallery"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Content</label>
+                <div class="toolbar">
+                    <button type="button" data-command="bold"><strong>B</strong></button>
+                    <button type="button" data-command="italic"><em>I</em></button>
+                    <button type="button" data-command="underline"><u>U</u></button>
+                    <button type="button" data-command="h2">H2</button>
+                    <button type="button" data-command="h3">H3</button>
+                    <button type="button" data-command="quote">Quote</button>
+                </div>
+                <div class="form-input form-textarea" id="article-content" contenteditable="true"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tags</label>
+                <div class="tag-input" id="tag-container">
+                    <input type="text" class="form-input" id="tag-input" placeholder="Add tags...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Author</label>
+                <input type="text" class="form-input" id="article-author" placeholder="Enter author name...">
+            </div>
+
+            <button class="submit-btn" id="publish-article">PUBLISH</button>
+        </div>
+
+        <div class="article-preview">
+            <h1 id="preview-title"></h1>
+            <div id="preview-category" class="article-category"></div>
+            <div id="preview-author" class="article-author"></div>
+            <div id="preview-images" class="image-gallery"></div>
+            <div id="preview-content"></div>
+            <div id="preview-tags"></div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Telegram WebApp
             const tg = window.Telegram.WebApp;
             tg.expand();
             
@@ -212,36 +523,184 @@
             tg.setHeaderColor('#ffffff');
             tg.setBackgroundColor('#ffffff');
 
-            // Handle navigation menu scrolling
-            const nav = document.querySelector('.nav-menu');
-            let isScrolling = false;
-            let startX;
-            let scrollLeft;
+            // Article Constructor
+            const constructor = document.querySelector('.article-constructor');
+            const modal = document.querySelector('.constructor-modal');
+            const tagInput = document.getElementById('tag-input');
+            const tagContainer = document.getElementById('tag-container');
+            const publishBtn = document.getElementById('publish-article');
 
-            nav.addEventListener('touchstart', (e) => {
-                isScrolling = true;
-                startX = e.touches[0].pageX - nav.offsetLeft;
-                scrollLeft = nav.scrollLeft;
+            constructor.addEventListener('click', () => {
+                modal.classList.add('active');
             });
 
-            nav.addEventListener('touchmove', (e) => {
-                if (!isScrolling) return;
-                e.preventDefault();
-                const x = e.touches[0].pageX - nav.offsetLeft;
-                const walk = (x - startX) * 2;
-                nav.scrollLeft = scrollLeft - walk;
+            // Close modal when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
             });
 
-            nav.addEventListener('touchend', () => {
-                isScrolling = false;
+            // Tag handling
+            let tags = new Set();
+
+            tagInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && tagInput.value.trim()) {
+                    e.preventDefault();
+                    const tag = tagInput.value.trim();
+                    if (!tags.has(tag)) {
+                        tags.add(tag);
+                        const tagElement = document.createElement('div');
+                        tagElement.className = 'tag';
+                        tagElement.innerHTML = `
+                            ${tag}
+                            <span class="tag-remove">×</span>
+                        `;
+                        tagContainer.insertBefore(tagElement, tagInput);
+                        tagInput.value = '';
+
+                        // Remove tag
+                        tagElement.querySelector('.tag-remove').addEventListener('click', () => {
+                            tags.delete(tag);
+                            tagElement.remove();
+                        });
+                    }
+                }
             });
 
-            // Handle article clicks
-            document.querySelectorAll('.article-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    // Here you can implement article viewing logic
-                    tg.showAlert(`Opening article: ${card.querySelector('.article-title').textContent}`);
+            // Check if user is editor
+            const urlParams = new URLSearchParams(window.location.search);
+            const isEditor = urlParams.get('is_editor') === 'true';
+            const userId = urlParams.get('user_id');
+
+            if (!isEditor) {
+                document.querySelector('.article-constructor').style.display = 'none';
+            }
+
+            // Image handling
+            const imageInput = document.getElementById('article-images');
+            const imageGallery = document.getElementById('image-gallery');
+            const images = new Set();
+
+            imageInput.addEventListener('change', (e) => {
+                const files = e.target.files;
+                for (let file of files) {
+                    if (!images.has(file)) {
+                        images.add(file);
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const div = document.createElement('div');
+                            div.className = 'image-preview';
+                            div.innerHTML = `
+                                <img src="${e.target.result}" alt="Article image">
+                                <div class="image-remove">×</div>
+                            `;
+                            imageGallery.appendChild(div);
+
+                            div.querySelector('.image-remove').addEventListener('click', () => {
+                                images.delete(file);
+                                div.remove();
+                                updatePreview();
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+                updatePreview();
+            });
+
+            // Rich text editor
+            const toolbar = document.querySelector('.toolbar');
+            const editor = document.getElementById('article-content');
+
+            toolbar.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
+
+                const command = button.dataset.command;
+                if (command) {
+                    e.preventDefault();
+                    if (['h2', 'h3', 'quote'].includes(command)) {
+                        const tag = command === 'quote' ? 'blockquote' : command;
+                        document.execCommand('formatBlock', false, `<${tag}>`);
+                    } else {
+                        document.execCommand(command, false, null);
+                    }
+                    button.classList.toggle('active');
+                    updatePreview();
+                }
+            });
+
+            // Preview handling
+            const previewToggle = document.querySelector('.preview-toggle');
+            const previewTitle = document.getElementById('preview-title');
+            const previewCategory = document.getElementById('preview-category');
+            const previewAuthor = document.getElementById('preview-author');
+            const previewContent = document.getElementById('preview-content');
+            const previewTags = document.getElementById('preview-tags');
+            const previewImages = document.getElementById('preview-images');
+
+            previewToggle.addEventListener('click', () => {
+                modal.classList.toggle('preview-mode');
+                previewToggle.textContent = modal.classList.contains('preview-mode') ? 'Edit' : 'Preview';
+                updatePreview();
+            });
+
+            function updatePreview() {
+                previewTitle.textContent = document.getElementById('article-title').value;
+                previewCategory.textContent = document.getElementById('article-category').value.toUpperCase();
+                previewAuthor.textContent = `By ${document.getElementById('article-author').value}`;
+                previewContent.innerHTML = editor.innerHTML;
+
+                // Update preview images
+                previewImages.innerHTML = '';
+                images.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const div = document.createElement('div');
+                        div.className = 'image-preview';
+                        div.innerHTML = `<img src="${e.target.result}" alt="Article image">`;
+                        previewImages.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
                 });
+
+                // Update preview tags
+                previewTags.innerHTML = Array.from(tags).map(tag => 
+                    `<span class="tag">${tag}</span>`
+                ).join('');
+            }
+
+            // Publish article
+            publishBtn.addEventListener('click', async () => {
+                const formData = new FormData();
+                formData.append('title', document.getElementById('article-title').value);
+                formData.append('category', document.getElementById('article-category').value);
+                formData.append('content', editor.innerHTML);
+                formData.append('author', document.getElementById('article-author').value);
+                formData.append('tags', JSON.stringify(Array.from(tags)));
+                formData.append('user_id', userId);
+
+                images.forEach(file => {
+                    formData.append('images[]', file);
+                });
+
+                try {
+                    const response = await fetch('/api/articles', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        tg.showAlert('Article published successfully!');
+                        modal.classList.remove('active');
+                        location.reload();
+                    } else {
+                        tg.showAlert('Failed to publish article');
+                    }
+                } catch (error) {
+                    tg.showAlert('Error publishing article');
+                }
             });
         });
     </script>
