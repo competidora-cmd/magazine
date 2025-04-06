@@ -80,7 +80,7 @@
 
         /* Main Content */
         .main-content {
-            margin-top: 80px;
+            margin-top: 90px;
             padding: 0.5rem;
             max-width: 1200px;
             margin-left: auto;
@@ -100,10 +100,8 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s;
             cursor: pointer;
+            transition: transform 0.2s;
         }
 
         .article-item:hover {
@@ -187,6 +185,7 @@
             display: flex;
         }
 
+        /* Mobile Styles */
         @media (max-width: 768px) {
             .article-grid {
                 grid-template-columns: 1fr;
@@ -233,7 +232,7 @@
             }
         }
 
-        /* Modal Styles */
+        /* Article View Modal */
         .article-view-modal {
             display: none;
             position: fixed;
@@ -241,13 +240,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: white;
+            background: rgba(255, 255, 255, 0.98);
             z-index: 2000;
             overflow-y: auto;
-        }
-
-        .article-view-modal.active {
-            display: block;
         }
 
         .article-view-content {
@@ -264,29 +259,31 @@
         }
 
         .article-view-content .article-category {
-            font-size: 0.8rem;
-            margin: 0.5rem 0;
+            display: inline-block;
+            background: var(--primary-pink);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
         }
 
         .article-view-content .article-meta {
-            margin: 0.5rem 0 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
         }
 
-        .article-view-content .article-images {
-            margin: 1rem 0;
-        }
-
-        .article-view-content .article-images img {
+        .article-view-content img {
             width: 100%;
             height: auto;
-            margin-bottom: 1rem;
+            margin: 0.5rem 0;
             border-radius: 8px;
         }
 
-        .article-view-content .article-content p {
+        .article-view-content p {
             font-size: 0.9rem;
             line-height: 1.6;
-            margin-bottom: 1rem;
+            margin: 0.5rem 0;
             color: #333;
         }
 
@@ -294,34 +291,20 @@
             position: fixed;
             top: 1rem;
             right: 1rem;
-            background: var(--primary-pink);
-            color: white;
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
+            background: white;
             border: none;
-            font-size: 1.2rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            line-height: 1;
             cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(255,0,102,0.3);
+            color: var(--dark-gray);
             z-index: 2001;
-        }
-
-        .article-full-content {
-            margin-top: 2rem;
-        }
-
-        .article-full-content img {
-            max-width: 100%;
-            height: auto;
-            margin: 1rem 0;
-        }
-
-        .article-full-content p {
-            margin: 1rem 0;
-            line-height: 1.6;
         }
 
         /* Constructor Modal */
@@ -638,14 +621,21 @@
                     `).join('')}
                 </div>
                 <div class="article-content">
-                    ${article.content.split('\n').map(paragraph => `
-                        <p>${paragraph}</p>
-                    `).join('')}
+                    ${article.content.split('\n').map(paragraph => 
+                        paragraph ? `<p>${paragraph}</p>` : ''
+                    ).join('')}
                 </div>
             `;
 
+            // Плавное появление модального окна
+            modal.style.opacity = '0';
+            modal.style.display = 'block';
+            setTimeout(() => {
+                modal.style.opacity = '1';
+            }, 10);
+
             modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; // Запрещаем прокрутку основной страницы
         }
 
         // Article creation handling
@@ -752,18 +742,26 @@
             }
         });
 
-        // Close article view when clicking close button
+        // Обновляем обработчики закрытия модального окна
         document.querySelector('.close-article').addEventListener('click', () => {
             const modal = document.getElementById('articleViewModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.classList.remove('active');
+                modal.style.display = 'none';
+                document.body.style.overflow = ''; // Возвращаем прокрутку
+            }, 300);
         });
 
-        // Close article view when clicking outside
         document.getElementById('articleViewModal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) {
-                e.currentTarget.classList.remove('active');
-                document.body.style.overflow = '';
+                const modal = e.currentTarget;
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                    modal.style.display = 'none';
+                    document.body.style.overflow = ''; // Возвращаем прокрутку
+                }, 300);
             }
         });
 
