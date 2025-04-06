@@ -216,6 +216,195 @@
                 font-size: 0.8rem;
             }
         }
+
+        /* Modal Styles */
+        .article-view-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .article-view-modal.active {
+            display: block;
+        }
+
+        .article-view-content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            position: relative;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-article {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--dark-gray);
+        }
+
+        .article-full-content {
+            margin-top: 2rem;
+        }
+
+        .article-full-content img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+        }
+
+        .article-full-content p {
+            margin: 1rem 0;
+            line-height: 1.6;
+        }
+
+        /* Constructor Modal */
+        .constructor-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .constructor-modal.active {
+            display: block;
+        }
+
+        .constructor-form {
+            max-width: 600px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark-gray);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-pink);
+            outline: none;
+        }
+
+        .form-textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .image-preview {
+            position: relative;
+            padding-bottom: 100%;
+            background: var(--light-gray);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .image-preview img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            border: none;
+        }
+
+        .image-counter {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .form-submit {
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .form-cancel {
+            background: var(--light-gray);
+            color: var(--dark-gray);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -239,6 +428,49 @@
     </main>
 
     <button class="article-constructor" id="createArticleBtn">+</button>
+
+    <div class="article-view-modal" id="articleViewModal">
+        <div class="article-view-content">
+            <button class="close-article">&times;</button>
+            <div class="article-full-content">
+                <!-- Full article content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="constructor-modal" id="constructorModal">
+        <form class="constructor-form" id="articleForm">
+            <div class="form-group">
+                <label class="form-label">Заголовок</label>
+                <input type="text" class="form-input" name="title" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Категория</label>
+                <select class="form-input" name="category" required>
+                    <option value="">Выберите категорию</option>
+                    <option value="fashion">Мода</option>
+                    <option value="beauty">Красота</option>
+                    <option value="lifestyle">Лайфстайл</option>
+                    <option value="culture">Культура</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Изображения (до 9 фотографий)</label>
+                <input type="file" class="form-input" name="images" accept="image/*" multiple>
+                <div class="image-gallery" id="imageGallery"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Содержание</label>
+                <textarea class="form-input form-textarea" name="content" required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Теги (через запятую)</label>
+                <input type="text" class="form-input" name="tags">
+            </div>
+            <button type="submit" class="form-submit">Опубликовать</button>
+            <button type="button" class="form-cancel" id="cancelArticle">Отмена</button>
+        </form>
+    </div>
 
     <script>
         // Initialize Telegram WebApp
@@ -300,7 +532,7 @@
                     : article.content;
 
                 return `
-                <a href="/article/${article.id}" class="article-item">
+                <div class="article-item" data-article-id="${article.id}">
                     <div class="article-image">
                         <img src="${article.imageUrls[0]}" alt="${article.title}">
                     </div>
@@ -313,9 +545,168 @@
                             <time class="article-date">${date}</time>
                         </div>
                     </div>
-                </a>`;
+                </div>`;
             }).join('');
+
+            // Add click handlers for articles
+            document.querySelectorAll('.article-item').forEach(article => {
+                article.addEventListener('click', () => {
+                    const articleId = article.dataset.articleId;
+                    showFullArticle(articleId);
+                });
+            });
         }
+
+        function showFullArticle(articleId) {
+            const article = articles.find(a => a.id === articleId);
+            if (!article) return;
+
+            const date = new Date(article.created_at).toLocaleDateString('ru-RU', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            const modal = document.getElementById('articleViewModal');
+            const content = modal.querySelector('.article-full-content');
+
+            content.innerHTML = `
+                <div class="article-category">${article.category}</div>
+                <h1 class="article-title">${article.title}</h1>
+                <div class="article-meta">
+                    <span class="article-author">By ${article.author}</span>
+                    <time class="article-date">${date}</time>
+                </div>
+                <div class="article-images">
+                    ${article.imageUrls.map(url => `
+                        <img src="${url}" alt="${article.title}">
+                    `).join('')}
+                </div>
+                <div class="article-content">
+                    ${article.content.split('\n').map(paragraph => `
+                        <p>${paragraph}</p>
+                    `).join('')}
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        // Article creation handling
+        const constructorBtn = document.getElementById('createArticleBtn');
+        const modal = document.getElementById('constructorModal');
+        const articleForm = document.getElementById('articleForm');
+        const cancelBtn = document.getElementById('cancelArticle');
+        const imageGallery = document.getElementById('imageGallery');
+        let selectedImages = [];
+
+        // Show modal when clicking create button
+        constructorBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        // Hide modal when clicking cancel
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+            articleForm.reset();
+            imageGallery.innerHTML = '';
+            selectedImages = [];
+        });
+
+        // Handle image selection
+        articleForm.images.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            
+            if (selectedImages.length + files.length > 9) {
+                tg.showAlert('Максимум 9 фотографий');
+                return;
+            }
+
+            files.forEach(file => {
+                if (selectedImages.length >= 9) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-preview';
+                    imageContainer.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview">
+                        <div class="image-counter">${selectedImages.length + 1}/9</div>
+                        <button type="button" class="image-remove">×</button>
+                    `;
+
+                    imageContainer.querySelector('.image-remove').addEventListener('click', () => {
+                        const index = selectedImages.indexOf(file);
+                        if (index > -1) {
+                            selectedImages.splice(index, 1);
+                            imageContainer.remove();
+                            // Update counters
+                            document.querySelectorAll('.image-counter').forEach((counter, i) => {
+                                counter.textContent = `${i + 1}/9`;
+                            });
+                        }
+                    });
+
+                    imageGallery.appendChild(imageContainer);
+                    selectedImages.push(file);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // Handle form submission
+        articleForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(articleForm);
+            const articleData = {
+                title: formData.get('title'),
+                category: formData.get('category'),
+                content: formData.get('content'),
+                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
+                images: selectedImages,
+                author: userId
+            };
+
+            if (!articleData.category) {
+                tg.showAlert('Пожалуйста, выберите категорию');
+                return;
+            }
+
+            if (selectedImages.length === 0) {
+                tg.showAlert('Пожалуйста, добавьте хотя бы одну фотографию');
+                return;
+            }
+
+            try {
+                const result = await api.createArticle(articleData);
+                if (result.success) {
+                    modal.classList.remove('active');
+                    articleForm.reset();
+                    imageGallery.innerHTML = '';
+                    selectedImages = [];
+                    await loadArticles();
+                    tg.showAlert('Статья успешно опубликована!');
+                } else {
+                    tg.showAlert('Ошибка при публикации статьи: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error creating article:', error);
+                tg.showAlert('Произошла ошибка. Пожалуйста, попробуйте позже.');
+            }
+        });
+
+        // Close article view when clicking close button
+        document.querySelector('.close-article').addEventListener('click', () => {
+            document.getElementById('articleViewModal').classList.remove('active');
+        });
+
+        // Close article view when clicking outside
+        document.getElementById('articleViewModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                e.currentTarget.classList.remove('active');
+            }
+        });
 
         // Category navigation
         categoryLinks.forEach(link => {
